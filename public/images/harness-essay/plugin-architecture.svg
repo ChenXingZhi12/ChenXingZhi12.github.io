@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="760" viewBox="0 0 1080 760" role="img" aria-labelledby="title desc">
+  <title id="title">把智能体拆成可以替换的能力</title>
+  <desc id="desc">概念图：模型接入、工具能力、策略权限、界面交互、会话记录和执行循环，通过共同的运行环境与生命周期连接。它们代表可组合的能力，不是完整产品架构。</desc>
+  <defs>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#d5dcd9"/></pattern>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#264767" flood-opacity=".06"/></filter>
+  </defs>
+  <rect width="1080" height="760" rx="20" fill="#f0f1eb"/>
+  <rect width="1080" height="760" rx="20" fill="url(#grid)"/>
+  <g font-family="'PingFang SC','Microsoft YaHei',sans-serif">
+    <text x="64" y="77" font-size="15" fill="#617365" letter-spacing="3">EVERYTHING IS A PLUGIN</text>
+    <text x="64" y="137" font-size="40" font-weight="600" fill="#233c4e">把智能体拆成可以替换的能力</text>
+    <text x="64" y="177" font-size="21" fill="#6b767a">组合能力，让运行环境随需求生长。</text>
+    <g fill="none" stroke="#9bafbb" stroke-width="3" stroke-linecap="round">
+      <path d="M230 305V388H850V305M540 305V388M230 570V488H850V570M540 570V488"/>
+      <path d="M540 388V409M540 467V488"/>
+    </g>
+    <g filter="url(#shadow)">
+      <rect x="96" y="227" width="268" height="106" rx="12" fill="#fff" stroke="#d7dfdf"/>
+      <rect x="406" y="227" width="268" height="106" rx="12" fill="#fff" stroke="#d7dfdf"/>
+      <rect x="716" y="227" width="268" height="106" rx="12" fill="#fff" stroke="#d7dfdf"/>
+      <rect x="96" y="543" width="268" height="106" rx="12" fill="#fff" stroke="#d7dfdf"/>
+      <rect x="406" y="543" width="268" height="106" rx="12" fill="#fff" stroke="#d7dfdf"/>
+      <rect x="716" y="543" width="268" height="106" rx="12" fill="#fff" stroke="#d7dfdf"/>
+      <rect x="286" y="406" width="508" height="65" rx="12" fill="#375f87"/>
+    </g>
+    <g fill="#c78247"><circle cx="126" cy="254" r="5"/><circle cx="436" cy="254" r="5"/><circle cx="746" cy="254" r="5"/><circle cx="126" cy="570" r="5"/><circle cx="436" cy="570" r="5"/><circle cx="746" cy="570" r="5"/></g>
+    <g text-anchor="middle" fill="#304d60" font-size="31" font-weight="500">
+      <text x="230" y="292">模型接入</text><text x="540" y="292">工具能力</text><text x="850" y="292">策略 / 权限</text>
+      <text x="230" y="608">界面交互</text><text x="540" y="608">会话记录</text><text x="850" y="608">执行循环</text>
+    </g>
+    <text x="540" y="449" text-anchor="middle" font-size="27" fill="#fff" font-weight="500">Harness · 运行环境与生命周期</text>
+    <path d="M64 693H1016" stroke="#d0d8d3"/>
+    <text x="64" y="728" font-size="18" fill="#6b767a">本站绘制 · 概念示意，非完整产品架构</text>
+    <text x="1016" y="728" text-anchor="end" font-size="15" fill="#6b767a" letter-spacing="2">COMPOSABLE BY DESIGN</text>
+  </g>
+</svg>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="780" viewBox="0 0 1080 780" role="img" aria-labelledby="title desc">
+  <title id="title">从一句需求，到可用的扩展</title>
+  <desc id="desc">概念流程：描述需求、生成插件、人工审批、安装运行、验证迭代。验证发现问题后返回生成步骤，形成反馈循环。审批是明确的授权边界。</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none" stroke="#7c95aa" stroke-width="1.5"/></marker></defs>
+  <rect width="1080" height="780" rx="20" fill="#edf2f5"/>
+  <g font-family="'PingFang SC','Microsoft YaHei',sans-serif">
+    <text x="64" y="77" font-size="15" fill="#657b8c" letter-spacing="3">FROM INTENT TO EXTENSION</text>
+    <text x="64" y="137" font-size="40" font-weight="600" fill="#233c4e">从一句需求，到可用的扩展</text>
+    <text x="64" y="179" font-size="21" fill="#6b767a">生成是起点，授权与验证决定下一步。</text>
+    <g fill="none" stroke="#7c95aa" stroke-width="3" marker-end="url(#arrow)"><path d="M355 307H430"/><path d="M705 307H780"/><path d="M900 368V459H705V520"/><path d="M570 587H407"/></g>
+    <g>
+      <rect x="64" y="248" width="290" height="120" rx="14" fill="#fff" stroke="#cdd9df"/>
+      <rect x="434" y="248" width="270" height="120" rx="14" fill="#fff" stroke="#cdd9df"/>
+      <rect x="784" y="248" width="232" height="120" rx="14" fill="#fff3e5" stroke="#d9ad7a" stroke-width="2"/>
+      <rect x="570" y="526" width="270" height="120" rx="14" fill="#fff" stroke="#cdd9df"/>
+      <rect x="134" y="526" width="270" height="120" rx="14" fill="#fff" stroke="#cdd9df"/>
+    </g>
+    <path d="M269 526V434H569V368" fill="none" stroke="#7c95aa" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow)"/>
+    <g fill="#627d92" font-size="16" letter-spacing="2"><text x="89" y="278">01</text><text x="459" y="278">02</text><text x="809" y="278" fill="#af773e">03</text><text x="595" y="556">04</text><text x="159" y="556">05</text></g>
+    <g text-anchor="middle" font-size="31" fill="#304d60" font-weight="500"><text x="209" y="327">描述需求</text><text x="569" y="327">生成插件</text><text x="900" y="327" fill="#93612d">人工审批</text><text x="705" y="606">安装运行</text><text x="269" y="606">验证迭代</text></g>
+    <rect x="342" y="417" width="163" height="32" rx="16" fill="#edf2f5"/><text x="423" y="439" text-anchor="middle" font-size="17" fill="#657b8c">反馈问题，再调整</text>
+    <text x="900" y="222" text-anchor="middle" font-size="18" fill="#93612d">明确授权边界</text>
+    <path d="M64 694H1016" stroke="#cdd9df"/>
+    <text x="64" y="730" font-size="18" fill="#6b767a">本站绘制 · 概念示意，非官方操作流程</text>
+    <text x="1016" y="730" text-anchor="end" font-size="15" fill="#6b767a" letter-spacing="2">BUILD · REVIEW · ITERATE</text>
+  </g>
+</svg>
