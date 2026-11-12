@@ -28,6 +28,12 @@ const { project, number = 1 } = Astro.props;
     )}
   </a>
   <div class="project-info">
+    {project.data.projectType && (
+      <p class="project-type">
+        {project.data.projectType}
+        {project.data.projectType === "工作项目" && " · 脱敏案例"}
+      </p>
+    )}
     <div class="tags">
       {project.data.tags.map((tag) => (
         <span>{tag}</span>

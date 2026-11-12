@@ -35,6 +35,8 @@ export const collections = {
     schema: z.object({
       ...common,
       featured: z.boolean().default(false),
+      projectType: z.enum(["工作项目", "个人项目", "开源项目"]).optional(),
+      period: z.string().optional(),
       image: z.string().optional(),
       code: z.url({ protocol: /^https?$/ }).optional(),
       demo: z.url({ protocol: /^https?$/ }).optional(),

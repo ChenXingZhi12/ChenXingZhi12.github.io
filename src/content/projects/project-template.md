@@ -4,6 +4,8 @@ description: "说明项目解决了什么问题。"
 date: 2026-11-12
 tags: ["项目实践"]
 featured: false
+projectType: "个人项目"
+# period: "2026.11 — 至今"
 draft: true
 # image: "/images/my-project.webp"
 # code: "https://github.com/your-name/your-project"

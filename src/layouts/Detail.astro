@@ -7,11 +7,22 @@ interface Props {
   date: Date;
   tags: string[];
   category?: string;
+  projectType?: string;
+  period?: string;
   kind: "notes" | "projects";
   headings: { depth: number; slug: string; text: string }[];
 }
-const { title, description, date, tags, category, kind, headings } =
-  Astro.props;
+const {
+  title,
+  description,
+  date,
+  tags,
+  category,
+  projectType,
+  period,
+  kind,
+  headings,
+} = Astro.props;
 const toc = headings.filter(
   (heading) => heading.depth === 2 || heading.depth === 3,
 );
@@ -27,7 +38,17 @@ const toc = headings.filter(
     <header class="detail-heading">
       <div class="detail-meta">
         <span class="eyebrow">{kind === "notes" ? "NOTES" : "PROJECT"}</span>
-        <time datetime={date.toISOString()}>{dateLabel(date)}</time>
+        {period ? (
+          <span>{period}</span>
+        ) : (
+          <time datetime={date.toISOString()}>{dateLabel(date)}</time>
+        )}
+        {projectType && (
+          <span>
+            {projectType}
+            {projectType === "工作项目" && " · 脱敏案例"}
+          </span>
+        )}
         {category && (
           <a href={noteFilterUrl("category", category)}>{category}</a>
         )}
