@@ -1,0 +1,43 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { contentUrl } from "../lib/content";
+interface Props {
+  project: CollectionEntry<"projects">;
+  number?: number;
+}
+const { project, number = 1 } = Astro.props;
+---
+
+<article class="project-card">
+  <a
+    class="project-art"
+    href={contentUrl("projects", project.id)}
+    tabindex="-1"
+    aria-hidden="true"
+  >
+    {project.data.image ? (
+      <img src={project.data.image} alt="" loading="lazy" />
+    ) : (
+      <>
+        <span class="project-index">
+          PROJECT / {String(number).padStart(2, "0")}
+        </span>
+        <span class="project-monogram">{project.data.title.slice(0, 2)}</span>
+        <span class="project-art-arrow">↗</span>
+      </>
+    )}
+  </a>
+  <div class="project-info">
+    <div class="tags">
+      {project.data.tags.map((tag) => (
+        <span>{tag}</span>
+      ))}
+    </div>
+    <h3>
+      <a href={contentUrl("projects", project.id)}>
+        {project.data.title} <span aria-hidden="true">↗</span>
+      </a>
+    </h3>
+    <p>{project.data.description}</p>
+  </div>
+</article>

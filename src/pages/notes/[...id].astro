@@ -1,0 +1,17 @@
+---
+import { render } from "astro:content";
+import Detail from "../../layouts/Detail.astro";
+import { publishedNotes } from "../../lib/content";
+export async function getStaticPaths() {
+  return (await publishedNotes()).map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
+}
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+---
+
+<Detail {...entry.data} kind="notes" headings={headings}>
+  <Content />
+</Detail>

@@ -1,0 +1,132 @@
+---
+import Base from "../../layouts/Base.astro";
+import EmptyState from "../../components/EmptyState.astro";
+import NoteRow from "../../components/NoteRow.astro";
+import { publishedNotes, yearLabel } from "../../lib/content";
+const notes = await publishedNotes();
+const categories = [...new Set(notes.map((note) => note.data.category))].sort();
+const tags = [...new Set(notes.flatMap((note) => note.data.tags))].sort();
+const years = [...new Set(notes.map((note) => yearLabel(note.data.date)))];
+---
+
+<Base title="记录" description="关于技术、学习与生活的记录，按时间慢慢积累。">
+  <header class="page-heading">
+    <p class="eyebrow">THOUGHTS, LEARNING & LIFE</p>
+    <h1>
+      思考与记录<span class="title-dot">。</span>
+    </h1>
+    <p>技术、学习，还有值得留下的日常。</p>
+  </header>
+  {notes.length ? (
+    <>
+      <form class="filter-bar" id="note-filters" action="/notes/" method="get">
+        <label>
+          分类
+          <select name="category">
+            <option value="">全部分类</option>
+            {categories.map((category) => (
+              <option value={category}>{category}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          标签
+          <select name="tag">
+            <option value="">全部标签</option>
+            {tags.map((tag) => (
+              <option value={tag}>{tag}</option>
+            ))}
+          </select>
+        </label>
+        <button class="filter-submit" type="submit">
+          筛选
+        </button>
+        <a class="reset-filter" href="/notes/">
+          重置
+        </a>
+        <span id="filter-count" aria-live="polite">
+          共 {notes.length} 篇
+        </span>
+      </form>
+      <noscript>
+        <p class="notice">
+          启用 JavaScript 后可按分类和标签筛选。以下展示全部记录。
+        </p>
+      </noscript>
+      <div id="notes-archive">
+        {years.map((year) => (
+          <section class="year-group" data-year-group>
+            <h2 class="year-heading">
+              {year}
+              <span aria-hidden="true"> /</span>
+            </h2>
+            <div>
+              {notes
+                .filter((note) => yearLabel(note.data.date) === year)
+                .map((note) => (
+                  <NoteRow note={note} />
+                ))}
+            </div>
+          </section>
+        ))}
+      </div>
+      <p class="filter-empty" id="filter-empty" hidden>
+        暂时没有符合筛选条件的记录。<a href="/notes/">查看全部记录 →</a>
+      </p>
+    </>
+  ) : (
+    <>
+      <div class="list-bar">
+        <span>全部记录</span>
+        <span>00 篇记录</span>
+      </div>
+      <EmptyState
+        title="留一点空白，给下一次思考。"
+        description="技术笔记、实践心得和生活随笔，将从这里慢慢开始。"
+      />
+    </>
+  )}
+</Base>
+<script>
+  const form = document.querySelector<HTMLFormElement>("#note-filters");
+  if (form) {
+    const category = form.elements.namedItem("category") as HTMLSelectElement;
+    const tag = form.elements.namedItem("tag") as HTMLSelectElement;
+    const filter = () => {
+      const params = new URLSearchParams(location.search);
+      const selectedCategory = params.get("category") ?? "";
+      const selectedTag = params.get("tag") ?? "";
+      category.value = selectedCategory;
+      tag.value = selectedTag;
+      let count = 0;
+      document.querySelectorAll<HTMLElement>("[data-note]").forEach((row) => {
+        const tags = JSON.parse(row.dataset.tags ?? "[]") as string[];
+        row.hidden = Boolean(
+          (selectedCategory && row.dataset.category !== selectedCategory) ||
+          (selectedTag && !tags.includes(selectedTag)),
+        );
+        if (!row.hidden) count++;
+      });
+      document
+        .querySelectorAll<HTMLElement>("[data-year-group]")
+        .forEach((group) => {
+          group.hidden = !group.querySelector("[data-note]:not([hidden])");
+        });
+      const counter = document.querySelector("#filter-count");
+      if (counter) counter.textContent = `共 ${count} 篇`;
+      const empty = document.querySelector<HTMLElement>("#filter-empty");
+      if (empty) empty.hidden = count > 0;
+    };
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const params = new URLSearchParams();
+      if (category.value) params.set("category", category.value);
+      if (tag.value) params.set("tag", tag.value);
+      history.pushState(null, "", `/notes/${params.size ? `?${params}` : ""}`);
+      filter();
+    });
+    form.addEventListener("change", () => form.requestSubmit());
+    window.addEventListener("popstate", filter);
+    filter();
+  }
+</script>

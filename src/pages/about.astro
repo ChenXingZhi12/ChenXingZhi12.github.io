@@ -1,0 +1,63 @@
+---
+import Base from "../layouts/Base.astro";
+import { site } from "../config";
+---
+
+<Base
+  title="关于"
+  description="你好，我是陈兴志。这是我的个人主页、作品集与记录空间。"
+>
+  <header class="page-heading">
+    <p class="eyebrow">ABOUT ME</p>
+    <h1>
+      关于我<span class="title-dot">。</span>
+    </h1>
+    <p>认识这个空间背后的人。</p>
+  </header>
+  <div class="about-grid">
+    <section class="about-intro">
+      <span class="eyebrow">你好，很高兴在这里相遇</span>
+      <h2>我是{site.author}。</h2>
+      <p class="about-lead">{site.description}</p>
+      <p>
+        这里是我的个人主页，也是一个持续更新的作品集和记录空间。我希望把做过的项目、学习中的思考，以及生活里值得留下的片段，慢慢整理在这里。
+      </p>
+      <p>内容会随着实践逐步充实。欢迎回来看看，也欢迎通过 GitHub 交流。</p>
+      <a
+        class="button"
+        href={site.github}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        访问我的 GitHub ↗
+      </a>
+    </section>
+    <aside class="about-aside">
+      <span class="eyebrow">这个空间里</span>
+      <a href="/projects/">
+        <span>01</span>
+        <div>
+          <h3>项目</h3>
+          <p>想法与实践的落点</p>
+        </div>
+        <span aria-hidden="true">↗</span>
+      </a>
+      <a href="/notes/">
+        <span>02</span>
+        <div>
+          <h3>记录</h3>
+          <p>技术为主，也有生活</p>
+        </div>
+        <span aria-hidden="true">↗</span>
+      </a>
+      <a href={site.repository} target="_blank" rel="noopener noreferrer">
+        <span>03</span>
+        <div>
+          <h3>本站源码</h3>
+          <p>这个网站的构建过程</p>
+        </div>
+        <span aria-hidden="true">↗</span>
+      </a>
+    </aside>
+  </div>
+</Base>

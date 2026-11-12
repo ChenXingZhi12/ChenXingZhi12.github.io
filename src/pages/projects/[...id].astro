@@ -1,0 +1,48 @@
+---
+import { render } from "astro:content";
+import Detail from "../../layouts/Detail.astro";
+import { publishedProjects } from "../../lib/content";
+export async function getStaticPaths() {
+  return (await publishedProjects()).map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
+}
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+---
+
+<Detail {...entry.data} kind="projects" headings={headings}>
+  {(entry.data.code || entry.data.demo) && (
+    <div class="project-detail-links">
+      {entry.data.code && (
+        <a
+          class="button"
+          href={entry.data.code}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          查看代码 ↗
+        </a>
+      )}
+      {entry.data.demo && (
+        <a
+          class="button button-outline"
+          href={entry.data.demo}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          在线体验 ↗
+        </a>
+      )}
+    </div>
+  )}
+  {entry.data.image && (
+    <img
+      class="project-cover"
+      src={entry.data.image}
+      alt={`${entry.data.title}项目展示`}
+    />
+  )}
+  <Content />
+</Detail>

@@ -1,0 +1,39 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { contentUrl, dateLabel, noteFilterUrl } from "../lib/content";
+interface Props {
+  note: CollectionEntry<"notes">;
+}
+const { note } = Astro.props;
+---
+
+<article
+  class="note-row"
+  data-note
+  data-category={note.data.category}
+  data-tags={JSON.stringify(note.data.tags)}
+>
+  <time datetime={note.data.date.toISOString()}>
+    {dateLabel(note.data.date)}
+  </time>
+  <div class="note-row-content">
+    <a
+      class="eyebrow note-category"
+      href={noteFilterUrl("category", note.data.category)}
+    >
+      {note.data.category}
+    </a>
+    <h3>
+      <a href={contentUrl("notes", note.id)}>
+        {note.data.title}
+        <span aria-hidden="true">↗</span>
+      </a>
+    </h3>
+    <p>{note.data.description}</p>
+    <div class="tags">
+      {note.data.tags.map((tag) => (
+        <a href={noteFilterUrl("tag", tag)}>#{tag}</a>
+      ))}
+    </div>
+  </div>
+</article>

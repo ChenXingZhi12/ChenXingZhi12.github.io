@@ -1,0 +1,144 @@
+---
+import Base from "../layouts/Base.astro";
+import { publishedNotes, publishedProjects } from "../lib/content";
+const count =
+  (await publishedNotes()).length + (await publishedProjects()).length;
+---
+
+<Base title="搜索" description="在文章与项目中，找到你感兴趣的内容。" noindex>
+  <header class="page-heading">
+    <p class="eyebrow">FIND SOMETHING INTERESTING</p>
+    <h1>
+      寻找一些想法<span class="title-dot">。</span>
+    </h1>
+    <p>在文章与项目中，找到你感兴趣的内容。</p>
+  </header>
+  <section class="search-section" data-search-count={count}>
+    <form id="search-form" role="search" class="search-form">
+      <label for="search-input" class="sr-only">
+        搜索文章与项目
+      </label>
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        aria-hidden="true"
+      >
+        <circle cx="10.8" cy="10.8" r="6.4" />
+        <path d="m16 16 4.5 4.5" />
+      </svg>
+      <input
+        id="search-input"
+        name="q"
+        type="search"
+        placeholder="输入关键词，发现一篇记录…"
+        autocomplete="off"
+      />
+      <button type="submit">
+        搜索 <span aria-hidden="true">↗</span>
+      </button>
+    </form>
+    <p id="search-status" class="search-status" role="status">
+      {count
+        ? "输入关键词，搜索已发布的文章和项目。"
+        : "暂无可检索内容。第一篇文章或项目发布后，就能在这里找到它。"}
+    </p>
+    <div id="search-results" class="search-results"></div>
+    <noscript>
+      <p class="notice">
+        搜索需要启用 JavaScript。你也可以直接浏览<a href="/notes/">记录</a>或
+        <a href="/projects/">项目</a>。
+      </p>
+    </noscript>
+  </section>
+</Base>
+<script>
+  interface SearchResult {
+    url: string;
+    meta: { title?: string; description?: string };
+    excerpt: string;
+  }
+  interface SearchIndex {
+    search: (
+      query: string,
+    ) => Promise<{ results: { data: () => Promise<SearchResult> }[] }>;
+  }
+  const section = document.querySelector<HTMLElement>("[data-search-count]");
+  const form = document.querySelector<HTMLFormElement>("#search-form");
+  const input = document.querySelector<HTMLInputElement>("#search-input");
+  const status = document.querySelector<HTMLElement>("#search-status");
+  const results = document.querySelector<HTMLElement>("#search-results");
+  let index: Promise<SearchIndex> | undefined;
+  let request = 0;
+  let timer: ReturnType<typeof setTimeout>;
+  const plainExcerpt = (excerpt: string) => {
+    const parsed = new DOMParser().parseFromString(excerpt, "text/html");
+    return parsed.body.textContent ?? "";
+  };
+  const search = async () => {
+    if (!input || !status || !results) return;
+    const current = ++request;
+    const query = input.value.trim();
+    const url = new URL(location.href);
+    if (query) url.searchParams.set("q", query);
+    else url.searchParams.delete("q");
+    history.replaceState(null, "", `${url.pathname}${url.search}`);
+    results.replaceChildren();
+    if (Number(section?.dataset.searchCount ?? 0) === 0) return;
+    if (!query) {
+      status.textContent = "输入关键词，搜索已发布的文章和项目。";
+      return;
+    }
+    status.textContent = "正在寻找相关内容…";
+    try {
+      const bundle = "/pagefind/pagefind.js";
+      index ??= import(/* @vite-ignore */ bundle) as Promise<SearchIndex>;
+      const response = await (await index).search(query);
+      const matches = await Promise.all(
+        response.results.slice(0, 30).map((result) => result.data()),
+      );
+      if (current !== request) return;
+      status.textContent = response.results.length
+        ? `找到 ${response.results.length} 条相关内容${response.results.length > 30 ? "，展示前 30 条" : ""}`
+        : "暂时没有找到相关内容，换一个关键词试试。";
+      for (const match of matches) {
+        const article = document.createElement("article");
+        const heading = document.createElement("h2");
+        const link = document.createElement("a");
+        link.href = match.url;
+        link.textContent = `${match.meta.title ?? "查看内容"} ↗`;
+        heading.append(link);
+        const excerpt = document.createElement("p");
+        excerpt.textContent =
+          plainExcerpt(match.excerpt) || match.meta.description || "";
+        const path = document.createElement("span");
+        path.className = "eyebrow";
+        path.textContent = match.url.includes("/projects/")
+          ? "项目与实践"
+          : "思考与记录";
+        article.append(path, heading, excerpt);
+        results.append(article);
+      }
+    } catch {
+      if (current !== request) return;
+      index = undefined;
+      status.textContent =
+        "搜索暂时无法加载，请稍后重试。你也可以直接浏览记录和项目。";
+    }
+  };
+  if (input && form) {
+    input.value = new URLSearchParams(location.search).get("q") ?? "";
+    input.addEventListener("input", () => {
+      request++;
+      clearTimeout(timer);
+      timer = setTimeout(search, 180);
+    });
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      clearTimeout(timer);
+      void search();
+    });
+    void search();
+  }
+</script>

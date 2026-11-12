@@ -1,0 +1,26 @@
+{
+  "name": "chenxingzhi-personal-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "check": "astro check",
+    "build": "astro build && node scripts/build-search.mjs",
+    "preview": "astro preview",
+    "verify": "node scripts/verify-build.mjs",
+    "test:content": "node scripts/test-content.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "3.7.4",
+    "astro": "7.4.11"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "pagefind": "1.6.0",
+    "typescript": "6.0.3"
+  }
+}
