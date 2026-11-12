@@ -919,6 +919,29 @@ main:focus {
   border-left: 1px solid var(--line);
   padding-left: 22px;
 }
+.toc-details > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+  list-style: none;
+}
+.toc-details > summary::-webkit-details-marker {
+  display: none;
+}
+.toc-details > summary span {
+  font-size: 16px;
+  transition: transform 0.15s;
+}
+.toc-details[open] > summary span {
+  transform: rotate(180deg);
+}
+.toc-details nav {
+  max-height: min(68vh, 650px);
+  overflow-y: auto;
+  padding-right: 8px;
+}
 .toc ol {
   list-style: none;
   padding: 0;
