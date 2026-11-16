@@ -12,8 +12,6 @@ draft: false
   <figcaption>模型是马，Harness 是让能力进入工作流的马具。AI 生成的概念配图，非官方截图。</figcaption>
 </figure>
 
-<p class="article-source">作者原创 · 公众号文章转载</p>
-
 11月2日晚上10点，DeepSeek 官方账号发了一条动态，标题只有一句英文：Your Harness. You Define It.
 
 配的是一段5分24秒的录屏。
