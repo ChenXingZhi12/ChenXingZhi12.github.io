@@ -1,6 +1,6 @@
 ---
 title: "Harness 学习记录：从 Web 插件到 Tool 定义"
-description: "继续 Cordis 学习，把插件接入完整的 Harness Web 应用，理解 profile、patch、工具注册、参数校验与输出渲染。"
+description: "继续 Cordis 学习，把插件接入 Harness Web 应用，理解 profile、patch、输入输出定义，并通过实操截图记录 greet 工具的真实模型调用。"
 date: 2026-11-16
 category: "源码学习"
 tags: ["DeepSeek Harness", "Cordis", "TypeScript", "Tool"]
@@ -9,22 +9,22 @@ draft: false
 
 学习日期：2026 年 11 月 16 日（Asia/Shanghai）。这次接着 [Cordis 七章学习记录](/notes/cordis-learning-notes/) 继续，重点是把已学过的插件机制放进完整的 Harness Web 应用，再拆解一个问候工具。
 
-本文整理当天的学习对话、练习代码和已确认的运行结果。命令、界面路径和实现细节以学习当天的本地 checkout 为准；示例中的 `C:/path/to/deepseek-harness` 是路径占位符，复现时需要替换。
+本文整理当天的学习对话、练习代码、运行结果和我提供的真实调用截图。命令、界面路径和实现细节以学习当天的本地 checkout 为准；示例中的 `C:/path/to/deepseek-harness` 是路径占位符，复现时需要替换。
 
 ## 今天学到了哪里
 
 此前的 Cordis 教程主要是自己组合服务和插件，观察框架怎样工作。今天继续使用已经建立的 Harness 插件练习，重新启动完整 Web 应用，理解应用组合与扩展的关系。
 
-| 内容                | 今天的进度                                           |
-| ------------------- | ---------------------------------------------------- |
-| 第一个 Harness 插件 | 重新启动练习，在 Web 设置中确认插件已启用            |
-| profile 与 patch    | 理解基础应用组合，以及怎样向组合中插入自己的插件     |
-| 开发一个 Tool       | 加入 `greet` 工具插件，并确认工具注册日志            |
-| 工具输入            | 拆解 `parameters`、必填字段、类型与参数名匹配        |
-| 工具输出            | 拆解 `execute`、`output.schema` 与 `output.render`   |
-| 真实模型调用        | 尚未发送模型请求，未验证模型实际选择和调用工具的过程 |
+| 内容                | 今天的进度                                                  |
+| ------------------- | ----------------------------------------------------------- |
+| 第一个 Harness 插件 | 重新启动练习，在 Web 设置中确认插件已启用                   |
+| profile 与 patch    | 理解基础应用组合，以及怎样向组合中插入自己的插件            |
+| 开发一个 Tool       | 加入 `greet` 工具插件，并确认工具注册日志                   |
+| 工具输入            | 拆解 `parameters`、必填字段、类型与参数名匹配               |
+| 工具输出            | 拆解 `execute`、`output.schema` 与 `output.render`          |
+| 真实模型调用        | 已在 Web 会话中调用 `greet`，向陈兴志问候，并查看参数与结果 |
 
-**这次实际验证到的是 Web 应用打开、插件加载和工具注册；文中问候结果及错误参数属于代码推演，没有写成已完成的模型调用。**
+**这次已完成 Web 应用打开、插件加载、工具注册，以及一次真实模型工具调用。实际调用传入的人名为“陈兴志”，工具返回 `Hello, 陈兴志!`。文中的 Ada 示例和错误参数表仍用于解释代码，没有逐项实测。**
 
 ## 第一个 Harness 插件：入口没有变，运行环境变了
 
@@ -228,6 +228,61 @@ export function apply(ctx: Context) {
 
 用 Python 类比：扩展模块初始化时把函数登记到命令表；用户后续请求某个命令时，框架才调用对应函数。模块和函数处在不同层次。
 
+## 真实调用：从聊天结果追到参数与返回值
+
+完成注册后，我在 Web 会话中发送了：
+
+```text
+使用 greet tool to greet 陈兴志
+```
+
+这次不仅看到了助手回复，还展开查看了工具调用记录。以下三张图片是我的实际操作截图，点击可查看原图。
+
+### 聊天中确认工具已被调用
+
+聊天界面显示了 `greet · 陈兴志` 的工具调用条目，助手最终回复：已通过 `greet` 工具向陈兴志问好，结果为 `Hello, 陈兴志!`。
+
+<figure class="article-figure">
+  <a href="/images/harness-learning/greet-chat.png" target="_blank" rel="noopener noreferrer">
+    <img src="/images/harness-learning/greet-chat.png" width="1443" height="446" alt="Harness 聊天截图：请求 greet 工具向陈兴志问候，界面显示工具调用及 Hello, 陈兴志! 的回复" loading="lazy" decoding="async" />
+  </a>
+  <figcaption>实操截图 1：聊天界面中的工具调用与最终回复。</figcaption>
+</figure>
+
+### 调用链中核对工具名和实际参数
+
+调用链把用户消息、上下文、助手消息和工具执行分开显示。在工具一行，可以直接看到：
+
+```text
+工具：greet
+参数：{"name":"陈兴志"}
+返回：Hello, 陈兴志!
+```
+
+这让前面代码中的 `parameters.name`、`args.name` 和实际输入对应起来。判断工具是否执行时，查看这一条调用记录，比只看助手自然语言回复更直接。
+
+<figure class="article-figure">
+  <a href="/images/harness-learning/greet-trace.png" target="_blank" rel="noopener noreferrer">
+    <img src="/images/harness-learning/greet-trace.png" width="1070" height="279" alt="Harness 调用链截图：greet 工具收到 name 为陈兴志的参数，并返回 Hello, 陈兴志!" loading="lazy" decoding="async" />
+  </a>
+  <figcaption>实操截图 2：工具调用链中的输入参数与返回值。</figcaption>
+</figure>
+
+### 工具明细中查看 Schema、状态与计时
+
+展开工具明细后，可以看到状态为“已完成”，参数为 `name: "陈兴志"`，结果为 `Hello, 陈兴志!`。Schema 中的 `required: ["name"]`，也与代码中的 `required: true` 对应。
+
+<figure class="article-figure">
+  <a href="/images/harness-learning/greet-details.png" target="_blank" rel="noopener noreferrer">
+    <img src="/images/harness-learning/greet-details.png" width="651" height="711" alt="greet 工具明细截图：已完成状态、name 参数、问候结果、参数 Schema 和 10 毫秒的工具耗时" loading="lazy" decoding="async" />
+  </a>
+  <figcaption>实操截图 3：工具详情中的完成状态、参数、结果、Schema 与计时。</figcaption>
+</figure>
+
+截图中整轮会话显示约 6 秒，工具明细显示 10 毫秒。这是不同范围的耗时：整轮会话还包含模型生成等过程，不能把两者直接当成同一个指标，也不能用这一次记录代表稳定性能。
+
+这次成功调用确认了“注册 → 接收参数 → 执行 → 返回工具结果 → 助手回复”这条路径。缺少参数、参数类型错误等情况，仍需要另行测试。
+
 ## parameters：输入规则与参数名必须一致
 
 工具的输入定义是：
@@ -365,7 +420,7 @@ profile 组织应用
   → 校验业务值，render 生成结果内容
 ```
 
-前四步解释“工具怎么进入系统”，后面的步骤解释“工具被调用后怎么工作”。当天确认到了插件加载和注册；真实模型调用仍是下一步待验证的内容。
+前四步解释“工具怎么进入系统”，后面的步骤解释“工具被调用后怎么工作”。这次通过实际会话和工具详情，把插件加载、工具注册与一次成功调用串了起来；错误输入等分支仍未逐项验证。
 
 后续学习路线包括插件配置、打包与安装，再继续深入生命周期、服务依赖、事件系统，以及能力分层、LLM 适配器和持久化插件。这些是后续安排，没有算作今天已经完成的内容。
 
@@ -375,4 +430,4 @@ profile 组织应用
 - 官方教程：[第一个 Harness 插件](https://deepseek-harness.github.io/deepseek-harness/develop/basic/)。
 - 官方教程：[开发一个 Tool](https://deepseek-harness.github.io/deepseek-harness/develop/basic/tool)。
 
-本文的学习进度与运行结果来自当天的练习记录；工具参数及输出流程另与当时本地 `packages/core/tools/src/schema.ts`、`pipeline.ts` 实现核对。文档和项目后续可能变化，复现时应结合所用版本检查。
+本文的学习进度与运行结果来自当天的练习记录及作者提供的三张实操截图；工具参数及输出流程另与当时本地 `packages/core/tools/src/schema.ts`、`pipeline.ts` 实现核对。文档和项目后续可能变化，复现时应结合所用版本检查。
